@@ -61,7 +61,7 @@ open class KMLParser: NSObject, XMLParserDelegate {
         var innerDoc: KMLRoot?
         for entry in kmz {
             if entry.path.hasSuffix(".kml") {
-                let _ = try kmz.extract(entry, consumer: { (data) in
+                let _ = try kmz.extract(entry, bufferSize: 256*1024, consumer: { (data) in
                     innerDoc = try kmlParser.parse(data: data)
                 })
                 break
@@ -90,7 +90,10 @@ open class KMLParser: NSObject, XMLParserDelegate {
         let xmlParser = XMLParser(data: data)
         xmlParser.delegate = self
         xmlParser.shouldProcessNamespaces = true
-        xmlParser.parse()
+        guard xmlParser.parse() else {
+            print("aborted")
+            throw ParsingError.unsupportedFormat("xx")
+        }
 
         if strict {
             if let error = errors.first {
@@ -145,13 +148,15 @@ open class KMLParser: NSObject, XMLParserDelegate {
     }
     
     private func setStackValue(_ value: Any?, forKey key: String) {
-        let ex = tryBlock {
+//        let ex = tryBlock {
             self.stack.last?.setValue(value, forKey: key)
-        }
-        if let ex = ex {
-            self.errors.append(ParsingError.unexpectedError(exception: ex))
-        }
+//        }
+//        if let ex = ex {
+//            self.errors.append(ParsingError.unexpectedError(exception: ex))
+//        }
     }
+    
+    // MARK: -
     
     open func parser(_ parser: XMLParser, foundCharacters string: String) {
         buffer.append(string)
@@ -1211,6 +1216,16 @@ open class KMLParser: NSObject, XMLParserDelegate {
         }
         
     }
+    
+    public func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
+        print("parse error: \(parseError)")
+        self.errors.append(parseError)
+        if strict {
+            parser.abortParsing()
+        }
+    }
+    
+    // MARK: -
 
     func parseDateTime(_ input: String) throws -> Date {
                 

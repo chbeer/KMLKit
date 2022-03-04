@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import XMLDocument
 
 public protocol KMLFeatureCollection {
     
@@ -79,7 +80,14 @@ open class KMLContainer: KMLFeature, KMLFeatureCollection {
         }
         return nil
     }
-    
+ 
+    override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
+        super.addChildNodes(to: element, in: doc)
+        for child in features {
+            addChild(to: element, child: child, in: doc)
+        }
+    }
+
 }
 
 extension KMLContainer: Collection {
@@ -94,19 +102,6 @@ extension KMLContainer: Collection {
     public func index(after i: Array<Element>.Index) -> Array<Element>.Index { features.index(after: i) }
     public func makeIterator() -> Iterator { return features.makeIterator() }
 }
-
-#if os(macOS)
-extension KMLContainer {
-
-    override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
-        super.addChildNodes(to: element, in: doc)
-        for child in features {
-            addChild(to: element, child: child, in: doc)
-        }
-    }
-
-}
-#endif
 
 /**
  A Folder is used to arrange other Features hierarchically (Folders, Placemarks, NetworkLinks, or Overlays). A Feature is visible only if it and all its ancestors are visible.

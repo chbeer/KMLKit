@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import XMLDocument
 
 open class AtomLink: NSObject, KMLAbstractLink {
     
@@ -28,13 +29,12 @@ open class AtomLink: NSObject, KMLAbstractLink {
 }
 
 
-#if os(macOS)
 extension AtomLink: KMLWriterNode {
     static let elementName = "author"
     
     func toElement(in doc: XMLDocument) -> XMLElement {        
         let element = XMLElement(name: Swift.type(of: self).elementName)
-        element.addNamespace(XMLNode.namespace(withName: "atom", stringValue: "http://www.w3.org/2005/Atom") as! XMLNode)
+//        element.addNamespace(XMLNode.namespace(withName: "atom", stringValue: "http://www.w3.org/2005/Atom") as! XMLNode)
 
         if let href = self.href {
             addAttribute(to: element, withName: "href", value: href.description)
@@ -50,4 +50,3 @@ extension AtomLink: KMLWriterNode {
         return element
     }
 }
-#endif

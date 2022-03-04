@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import CoreLocation
 
 @testable import KMLKit
 class KMLParserTest: XCTestCase {

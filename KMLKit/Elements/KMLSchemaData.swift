@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import XMLDocument
 
 /**
  This element is used in conjunction with &lt;Schema&gt; to add typed custom data to a KML Feature. The Schema element (identified by the schemaUrl attribute) declares the custom data type. The actual data objects ("instances" of the custom data) are defined using the SchemaData element.
@@ -17,10 +18,7 @@ import Foundation
 open class KMLSchemaData: KMLObject, KMLSimpleData {
     /** This element assigns a value to the custom data field identified by the name attribute. The type and name of this custom data field are declared in the &lt;Schema&gt; element. */
     open var data: [String : Any] = [:]
-}
 
-#if os(macOS)
-extension KMLSchemaData {
 
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         super.addChildNodes(to: element, in: doc)
@@ -33,17 +31,16 @@ extension KMLSchemaData {
                 childElement.addAttribute(nameAttr)
                 
                 for item in array {
-                    addSimpleChild(to: childElement, withName: "value", value: "\(item)")
+                    addSimpleChild(to: childElement, withName: "value", value: String(describing: item))
                 }
 
             } else {
                 let childElement = XMLElement(name: "SimpleData")
                 childElement.addAttribute(nameAttr)
-                childElement.setStringValue("\(value)", resolvingEntities: false)
+                childElement.setStringValue(String(describing: value), resolvingEntities: false)
                 element.addChild(childElement)
             }
         }
         
     }
 }
-#endif

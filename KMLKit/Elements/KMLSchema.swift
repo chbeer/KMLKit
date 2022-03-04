@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import XMLDocument
 
 /**
  Specifies a custom KML schema that is used to add custom data to KML Features. The "id" attribute is required and must be unique within the KML file. &lt;Schema&gt; is always a child of &lt;Document&gt;.
@@ -32,9 +33,8 @@ open class KMLSchema: NSObject {
 
 }
 
-#if os(macOS)
 extension KMLSchema: KMLWriterNode {
-    static let elementName = "kml"
+    static let elementName = "Schema"
     
     func toElement(in doc: XMLDocument) -> XMLElement {
         let element = XMLElement(name: type(of: self).elementName)
@@ -55,4 +55,3 @@ extension KMLSchema: KMLWriterNode {
         return element
     }
 }
-#endif

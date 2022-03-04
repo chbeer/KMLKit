@@ -11,7 +11,7 @@ import XCTest
 class KmlColorTest: XCTestCase {
 
     func testColorHexRoundTrip() throws {
-        
+#if os(macOS)
         XCTAssertEqual("ffffffff", KMLColor.white.usingColorSpace(.sRGB)!.kmlHex)
         XCTAssertEqual("ff000000", KMLColor.black.usingColorSpace(.sRGB)!.kmlHex)
         
@@ -23,6 +23,7 @@ class KmlColorTest: XCTestCase {
         XCTAssertEqual("78563412", color.kmlHex)
         
         XCTAssertEqual("ffa8ff00", KMLColor(kmlHex: "ffa8ff00").kmlHex)
+#endif
     }
 
 }

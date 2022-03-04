@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import XMLDocument
 
 /**
  A Document is a container for features and styles. This element is required if your KML file uses shared styles. It is recommended that you use shared styles, which require the following steps:
@@ -21,10 +22,8 @@ import Foundation
  */
 open class KMLDocument: KMLContainer {
     @objc open var schema: KMLSchema?
-}
 
-#if os(macOS)
-extension KMLDocument {
+    // MARK: - XMLWriterNode
     
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         super.addChildNodes(to: element, in: doc)
@@ -32,4 +31,3 @@ extension KMLDocument {
     }
 
 }
-#endif

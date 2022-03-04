@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import XMLDocument
 
 /**
  This is an abstract base class and cannot be used directly in a KML file. It provides the **id** attribute, which allows unique identification of a KML element, and the **targetId** attribute, which is used to reference objects that have already been loaded into Google Earth. The id attribute must be assigned if the &lt;Update&gt; mechanism is to be used.
  */
-open class KMLObject: NSObject {
+open class KMLObject: NSObject, KMLWriterNode {
     @objc open var id: String?
     @objc open var name: String?
     @objc open var targetId: String?
@@ -28,10 +29,8 @@ open class KMLObject: NSObject {
         self.id = attributes["id"]
         self.targetId = attributes["targetId"]
     }
-}
 
-#if os(macOS)
-@objc extension KMLObject: KMLWriterNode {
+    // MARK: - KMLWriterNode
     
     class var elementName: String {
         let className = String(describing: self).dropFirst(3)
@@ -50,4 +49,3 @@ open class KMLObject: NSObject {
         return element
     }
 }
-#endif

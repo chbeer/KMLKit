@@ -7,6 +7,7 @@
 
 import Foundation
 import MapKit
+import XMLDocument
 
 public protocol KMLGeometryCollection {
     func add(geometry: KMLGeometry)
@@ -27,10 +28,6 @@ open class KMLGeometry: KMLObject {
         }
         
     }
-}
-
-#if os(macOS)
-extension KMLGeometry {
 
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         super.addChildNodes(to: element, in: doc)
@@ -38,7 +35,7 @@ extension KMLGeometry {
     }
     
 }
-#endif
+
 
 /**
  A geographic location defined by longitude, latitude, and (optional) altitude. When a Point is contained by a Placemark, the point itself determines the position of the Placemark's name and icon. When a Point is extruded, it is connected to the ground with a line. This "tether" uses the current LineStyle.
@@ -84,11 +81,6 @@ open class KMLPoint: KMLGeometry {
         
     }
     
-}
-
-#if os(macOS)
-extension KMLPoint {
-
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         addSimpleChild(to: element, withName: "extrude", value: extrude, numeric: true, default: false)
         super.addChildNodes(to: element, in: doc)
@@ -96,7 +88,6 @@ extension KMLPoint {
     }
 
 }
-#endif
 
 /**
  A 3D object described in a COLLADA file (referenced in the &lt;Link&gt; tag). COLLADA files have a .dae file extension. Models are created in their own coordinate space and then located, positioned, and scaled in Google Earth. See the "Topics in KML" page on [Models](https://developers.google.com/kml/documentation/models) for more detail.
@@ -113,6 +104,14 @@ open class KMLModel: KMLGeometry {
         @objc open var x: Double = 1.0
         @objc open var y: Double = 1.0
         @objc open var z: Double = 1.0
+        
+        override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
+            super.addChildNodes(to: element, in: doc)
+            addSimpleChild(to: element, withName: "x", value: x)
+            addSimpleChild(to: element, withName: "y", value: y)
+            addSimpleChild(to: element, withName: "z", value: z)
+        }
+
     }
 
     /**
@@ -143,12 +142,7 @@ open class KMLModel: KMLGeometry {
      
      */
     @objc open var resourceMap: [String:String] = [:]
-
-}
-
-#if os(macOS)
-extension KMLModel {
-    
+   
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         super.addChildNodes(to: element, in: doc)
         let locationElem = XMLElement(name: "Location")
@@ -176,19 +170,6 @@ extension KMLModel {
 
 }
 
-extension KMLModel.KMLScale {
-    
-    override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
-        super.addChildNodes(to: element, in: doc)
-        addSimpleChild(to: element, withName: "x", value: x)
-        addSimpleChild(to: element, withName: "y", value: y)
-        addSimpleChild(to: element, withName: "z", value: z)
-    }
-    
-}
-
-#endif
-
 /**
  A container for zero or more geometry primitives associated with the same feature.
  */
@@ -199,10 +180,6 @@ open class KMLMultiGeometry: KMLGeometry, KMLGeometryCollection {
     open func add(geometry: KMLGeometry) {
         self.geometry.append(geometry)
     }
-}
-
-#if os(macOS)
-extension KMLMultiGeometry {
 
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         super.addChildNodes(to: element, in: doc)
@@ -212,7 +189,6 @@ extension KMLMultiGeometry {
     }
 
 }
-#endif
 
 /**
  Defines a connected set of line segments. Use &lt;LineStyle&gt; to specify the color, color mode, and width of the line. When a LineString is extruded, the line is extended to the ground, forming a polygon that looks somewhat like a wall or fence. For extruded LineStrings, the line itself uses the current LineStyle, and the extrusion uses the current PolyStyle. See the [KML Tutorial](https://developers.google.com/kml/documentation/kml_tut) for examples of LineStrings (or paths).
@@ -226,11 +202,8 @@ open class KMLLineString: KMLGeometry {
     /** Two or more coordinate tuples, each consisting of floating point values for longitude, latitude, and altitude. The altitude component is optional. Insert a space between tuples. Do not include spaces within a tuple. */
     @objc open var coordinates: [CLLocation] = []
     @objc open var altitudeOffset: Double = 0.0
-}
 
-#if os(macOS)
-extension KMLLineString {
-
+    
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         addSimpleChild(to: element, withName: "extrude", value: extrude, numeric: true, default: false)
         addSimpleChild(to: element, withName: "tessellate", value: tessellate, numeric: true, default: false)
@@ -240,7 +213,7 @@ extension KMLLineString {
     }
     
 }
-#endif
+
 
 /**
  Defines a closed line string, typically the outer boundary of a Polygon. Optionally, a LinearRing can also be used as the inner boundary of a Polygon to create holes in the Polygon. A Polygon can contain multiple &lt;LinearRing&gt; elements used as inner boundaries.
@@ -253,10 +226,7 @@ open class KMLLinearRing: KMLGeometry {
     
     /** Four or more tuples, each consisting of floating point values for longitude, latitude, and altitude. The altitude component is optional. Do not include spaces within a tuple. The last coordinate must be the same as the first coordinate. Coordinates are expressed in decimal degrees only. */
     @objc open var coordinates: [CLLocation] = []
-}
 
-#if os(macOS)
-extension KMLLinearRing {
     
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         super.addChildNodes(to: element, in: doc)
@@ -266,7 +236,6 @@ extension KMLLinearRing {
     }
 
 }
-#endif
 
 open class KMLBoundary: NSObject {
     @objc open var linearRing = KMLLinearRing()
@@ -287,10 +256,7 @@ open class KMLPolygon: KMLGeometry {
     @objc open var outerBoundaryIs = KMLBoundary()
     /** Contains a &lt;LinearRing&gt; element. A Polygon can contain multiple &lt;innerBoundaryIs&gt; elements, which create multiple cut-outs inside the Polygon. */
     @objc open var innerBoundaryIs: [KMLBoundary] = []
-}
 
-#if os(macOS)
-extension KMLPolygon {
     
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         addSimpleChild(to: element, withName: "extrude", value: extrude, numeric: true, default: false)
@@ -311,4 +277,4 @@ extension KMLPolygon {
     }
 
 }
-#endif
+

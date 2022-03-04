@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ParsingError: Error {
+public enum ParsingError: Error {
     case unsupportedFormat(_ extension: String)
     case unsupportedDateFormat(_ dateString: String)
     case failedToReadFile(_ url: URL)

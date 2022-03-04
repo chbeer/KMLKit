@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import XMLDocument
 
 open class AtomAuthor: NSObject {
     @objc open var name: [String] = []
@@ -34,13 +35,12 @@ open class AtomAuthor: NSObject {
     
 }
 
-#if os(macOS)
 extension AtomAuthor: KMLWriterNode {
     static let elementName = "atom:author"
     
     func toElement(in doc: XMLDocument) -> XMLElement {
         let element = XMLElement(name: type(of: self).elementName)
-        element.addNamespace(XMLNode.namespace(withName: "atom", stringValue: "http://www.w3.org/2005/Atom") as! XMLNode)
+//        element.addNamespace(XMLNode.namespace(withName: "atom", stringValue: "http://www.w3.org/2005/Atom") as! XMLNode)
         
         for child in name {
             addSimpleChild(to: element, withName: "atom:name", value: child)
@@ -55,4 +55,3 @@ extension AtomAuthor: KMLWriterNode {
         return element
     }
 }
-#endif

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import XMLDocument
 
 /**
  This is an abstract element and cannot be used directly in a KML file. This element is extended by the &lt;Camera&gt; and &lt;LookAt&gt; elements.
@@ -33,10 +34,8 @@ open class KMLAbstractView: KMLObject {
     
     /** Enables special viewing modes in Google Earth 6.0 and later. It has one or more &lt;gx:option&gt; child elements.  */
     @objc open var options: [ViewOption] = []
-}
 
-#if os(macOS)
-extension KMLAbstractView {
+    // MARK: - KMLWriterNode
 
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         super.addChildNodes(to: element, in: doc)
@@ -46,4 +45,3 @@ extension KMLAbstractView {
     }
     
 }
-#endif

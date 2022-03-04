@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreGraphics
+import XMLDocument
 
 @objc public protocol KMLAbstractLink: class {
     var href: URL? { get set }
@@ -33,12 +34,8 @@ open class KMLBasicLink: KMLObject, KMLAbstractLink {
     internal override init(_ attributes: [String : String]) {
         super.init(attributes)
     }
-    
-}
 
-
-#if os(macOS)
-extension KMLBasicLink {
+    // MARK: - XMLWriterNode
 
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         super.addChildNodes(to: element, in: doc)
@@ -46,7 +43,6 @@ extension KMLBasicLink {
     }
 
 }
-#endif
 
 /**
  &lt;Link&gt; specifies the location of any of the following:
@@ -220,10 +216,6 @@ open class KMLLink: KMLBasicLink {
         }
         
     }
-}
-
-#if os(macOS)
-extension KMLLink {
     
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         super.addChildNodes(to: element, in: doc)
@@ -236,7 +228,6 @@ extension KMLLink {
         addSimpleChild(to: element, withName: "httpQuery", value: httpQuery)
     }
 }
-#endif
 
 /**
  Defines an image associated with an Icon style or overlay. The required &lt;href&gt; child element defines the location of the image to be used as the overlay or as the icon for the placemark. This location can either be on a local file system or a remote web server.
@@ -261,10 +252,6 @@ open class KMLIcon: KMLLink {
         }
         
     }
-}
-
-#if os(macOS)
-extension KMLIcon {
 
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         super.addChildNodes(to: element, in: doc)
@@ -277,4 +264,3 @@ extension KMLIcon {
     }
 
 }
-#endif

@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreGraphics
+import XMLDocument
 
 /**
  This is an abstract element and cannot be used directly in a KML file. It is the base type for the &lt;Style&gt; and &lt;StyleMap&gt; elements. The StyleMap element selects a style based on the current mode of the Placemark. An element derived from StyleSelector is uniquely identified by its **id** and its url.
@@ -27,10 +28,8 @@ open class KMLStyle: KMLObject, KMLStyleSelector {
     @objc open var polyStyle: KMLPolyStyle?
     @objc open var balloonStyle: KMLBalloonStyle?
     @objc open var listStyle: KMLListStyle?
-}
 
-#if os(macOS)
-extension KMLStyle {
+    
 
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         super.addChildNodes(to: element, in: doc)
@@ -42,7 +41,6 @@ extension KMLStyle {
         addChild(to: element, child: listStyle, in: doc)
     }
 }
-#endif
 
 open class KMLSubStyle: KMLStyle {
     
@@ -99,10 +97,6 @@ open class KMLColorStyle: KMLSubStyle {
         
     }
     
-}
-
-#if os(macOS)
-extension KMLColorStyle {
 
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         super.addChildNodes(to: element, in: doc)
@@ -110,7 +104,6 @@ extension KMLColorStyle {
         addSimpleChild(to: element, withName: "colorMode", value: colorMode.description, default: "normal")
     }
 }
-#endif
 
 /**
  Specifies how the description balloon for placemarks is drawn. The &lt;bgColor&gt;, if specified, is used as the background color of the balloon. See [&lt;Feature&gt;](https://developers.google.com/kml/documentation/kmlreference#feature) for a diagram illustrating how the default description balloon appears in Google Earth.
@@ -170,10 +163,7 @@ open class KMLBalloonStyle: KMLColorStyle {
             super.setValue(value, forKey: key)
         }
     }
-}
 
-#if os(macOS)
-extension KMLBalloonStyle {
 
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         super.addChildNodes(to: element, in: doc)
@@ -183,7 +173,6 @@ extension KMLBalloonStyle {
         addSimpleChild(to: element, withName: "displayMode", value: displayMode.description, default: "default")
     }
 }
-#endif
 
 /**
  Specifies how the &lt;name&gt; of a Feature is drawn in the 3D viewer. A custom color, color mode, and scale for the label (name) can be specified.
@@ -191,10 +180,7 @@ extension KMLBalloonStyle {
 open class KMLLabelStyle: KMLColorStyle {
     /** Resizes the label. */
     @objc open var scale: Double = 1.0
-}
 
-#if os(macOS)
-extension KMLLabelStyle {
 
     override func toElement(in doc: XMLDocument) -> XMLElement {
         let element = super.toElement(in: doc)
@@ -202,7 +188,6 @@ extension KMLLabelStyle {
         return element
     }
 }
-#endif
 
 /**
  Specifies the drawing style (color, color mode, and line width) for all line geometry. Line geometry includes the outlines of outlined polygons and the extruded "tether" of Placemark icons (if extrusion is enabled).
@@ -225,18 +210,14 @@ open class KMLLineStyle: KMLColorStyle {
     
     /** Width of the line, in pixels. */
     @objc open var width: Double = 1.0
-}
 
-#if os(macOS)
-extension KMLLineStyle {
-
+    
     override func toElement(in doc: XMLDocument) -> XMLElement {
         let element = super.toElement(in: doc)
         addSimpleChild(to: element, withName: "width", value: width, default: 1.0)
         return element
     }
 }
-#endif
 
 open class KMLItemIcon: KMLObject {
     
@@ -299,10 +280,7 @@ open class KMLItemIcon: KMLObject {
             super.setValue(value, forKey: key)
         }
     }
-}
-
-#if os(macOS)
-extension KMLItemIcon {
+    
 
     override func toElement(in doc: XMLDocument) -> XMLElement {
         let element = super.toElement(in: doc)
@@ -311,7 +289,6 @@ extension KMLItemIcon {
         return element
     }
 }
-#endif
 
 /**
  Specifies how a Feature is displayed in the list view. The list view is a hierarchy of containers and children; in Google Earth, this is the Places panel.
@@ -377,10 +354,7 @@ open class KMLListStyle: KMLSubStyle {
         }
         
     }
-}
 
-#if os(macOS)
-extension KMLListStyle {
 
     override func toElement(in doc: XMLDocument) -> XMLElement {
         let element = super.toElement(in: doc)
@@ -393,7 +367,6 @@ extension KMLListStyle {
         return element
     }
 }
-#endif
 
 /**
  Specifies the drawing style for all polygons, including polygon extrusions (which look like the walls of buildings) and line extrusions (which look like solid fences).
@@ -403,10 +376,7 @@ open class KMLPolyStyle: KMLColorStyle {
     @objc open var fill = true
     /** Specifies whether to outline the polygon. Polygon outlines use the current LineStyle. */
     @objc open var outline = true
-}
 
-#if os(macOS)
-extension KMLPolyStyle {
 
     override func toElement(in doc: XMLDocument) -> XMLElement {
         let element = super.toElement(in: doc)
@@ -415,7 +385,6 @@ extension KMLPolyStyle {
         return element
     }
 }
-#endif
 
 /**
  Specifies how icons for point Placemarks are drawn, both in the Places panel and in the 3D viewer of Google Earth. The &lt;Icon&gt; element specifies the icon image. The &lt;scale&gt; element specifies the x, y scaling of the icon. The color specified in the &lt;color&gt; element of &lt;IconStyle&gt; is blended with the color of the &lt;Icon&gt;.
@@ -451,10 +420,7 @@ open class KMLIconStyle: KMLColorStyle {
             super.setValue(value, forKey: key)
         }
     }
-}
 
-#if os(macOS)
-extension KMLIconStyle {
 
     override func toElement(in doc: XMLDocument) -> XMLElement {
         let element = super.toElement(in: doc)
@@ -469,7 +435,6 @@ extension KMLIconStyle {
         return element
     }
 }
-#endif
 
 open class KMLStyleRef: NSObject, KMLStyleSelector {
     @objc open var styleUrl: URL
@@ -490,7 +455,6 @@ open class KMLStyleRef: NSObject, KMLStyleSelector {
     
 }
 
-#if os(macOS)
 extension KMLStyleRef: KMLWriterNode {
     static let elementName = "styleUrl"
     
@@ -500,7 +464,6 @@ extension KMLStyleRef: KMLWriterNode {
         return element
     }
 }
-#endif
 
 /**
  A &lt;StyleMap&gt; maps between two different Styles.
@@ -517,10 +480,7 @@ open class KMLStyleMap: KMLObject, KMLStyleSelector {
      - **&lt;styleUrl&gt;** or **&lt;Style&gt;**, which references the style. In &lt;styleUrl&gt;, for referenced style elements that are local to the KML document, a simple # referencing is used. For styles that are contained in external files, use a full URL along with # referencing. For example:
      */
     @objc open var pairs: [String:KMLStyleSelector] = [:]
-}
 
-#if os(macOS)
-extension KMLStyleMap {
 
     override func toElement(in doc: XMLDocument) -> XMLElement {
         let element = super.toElement(in: doc)
@@ -538,7 +498,6 @@ extension KMLStyleMap {
         return element
     }
 }
-#endif
 
 extension KMLStyleMap: Sequence {
 

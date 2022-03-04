@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import XMLDocument
 
 open class KMLRoot: NSObject, KMLFeatureCollection {
     
@@ -52,26 +53,25 @@ open class KMLRoot: NSObject, KMLFeatureCollection {
     
 }
 
-#if os(macOS)
 extension KMLRoot: KMLWriterNode {
     static let elementName = "kml"
     
     func toElement(in doc: XMLDocument) -> XMLElement {
         let element = XMLElement(name: type(of: self).elementName)
         
-        let nsXSI = XMLNode.namespace(withName: "xsi", stringValue: "http://www.w3.org/2001/XMLSchema-instance") as! XMLNode
-        element.addNamespace(nsXSI)
-
-        var ns = XMLNode.namespace(withName: "", stringValue: "http://www.opengis.net/kml/2.2") as! XMLNode
-        element.addNamespace(ns)
-        
-        ns = XMLNode.namespace(withName: "gx", stringValue: "http://www.google.com/kml/ext/2.2") as! XMLNode
-        element.addNamespace(ns)
-        
-        let schemaLocations = XMLNode.attribute(withName: "xsi:schemaLocation", stringValue: "http://www.opengis.net/kml/2.2 http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd") as! XMLNode
-        element.addAttribute(schemaLocations)
-        
-        doc.addChild(element)
+//        let nsXSI = XMLNode.namespace(withName: "xsi", stringValue: "http://www.w3.org/2001/XMLSchema-instance") as! XMLNode
+//        element.addNamespace(nsXSI)
+//
+//        var ns = XMLNode.namespace(withName: "", stringValue: "http://www.opengis.net/kml/2.2") as! XMLNode
+//        element.addNamespace(ns)
+//        
+//        ns = XMLNode.namespace(withName: "gx", stringValue: "http://www.google.com/kml/ext/2.2") as! XMLNode
+//        element.addNamespace(ns)
+//        
+//        let schemaLocations = XMLNode.attribute(withName: "xsi:schemaLocation", stringValue: "http://www.opengis.net/kml/2.2 http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd") as! XMLNode
+//        element.addAttribute(schemaLocations)
+//        
+        doc.setRootElement(element)
         
         addChild(to: element, child: self.networkLinkControl, in: doc)
         addChild(to: element, child: self.feature, in: doc)
@@ -79,4 +79,3 @@ extension KMLRoot: KMLWriterNode {
         return element
     }
 }
-#endif

@@ -7,9 +7,10 @@
 
 import Foundation
 import CoreLocation
+import CoreGraphics
+import XMLDocument
 
-
-@objc internal protocol KMLWriterNode: class {
+internal protocol KMLWriterNode: AnyObject {
     
     static var elementName: String { get }
     
@@ -28,10 +29,11 @@ internal extension KMLWriterNode {
         if let defaultValue = defaultValue, defaultValue == value { return }
         
         if value.contains("<") {
-            let textNode = XMLNode(kind: .text, options: .nodeIsCDATA)
-            textNode.setStringValue(value, resolvingEntities: false)
-            let childNode = XMLNode.element(withName: name, children: [textNode], attributes: nil) as! XMLNode
-            parent.addChild(childNode)
+            assertionFailure("TODO")
+//            let textNode = XMLNode(kind: .text, options: .nodeIsCDATA)
+//            textNode.setStringValue(value, resolvingEntities: false)
+//            let childNode = XMLNode.element(withName: name, children: [textNode], attributes: nil) as! XMLNode
+//            parent.addChild(childNode)
         } else {
             parent.addChild(XMLNode.element(withName: name, stringValue: value) as! XMLNode)
         }
@@ -102,7 +104,12 @@ internal extension KMLWriterNode {
     }
     
     func addChild(to parent: XMLElement, child inChild: AnyObject?, in doc: XMLDocument) {
-        guard let child = inChild as? KMLWriterNode else { return }
+        guard let child = inChild as? KMLWriterNode else {
+            if inChild != nil {
+                assertionFailure("Skipping child \(inChild) because it's no KMLWriterNode")
+            }
+            return
+        }
         let childElement = child.toElement(in: doc)
         parent.addChild(childElement)
     }
@@ -132,13 +139,15 @@ open class KMLWriter {
         
     }
     
+    open func data(forKML kml: KMLRoot) throws -> Data {
+        let doc = XMLDocument()
+        let _ = kml.toElement(in: doc)
+        
+        return doc.xmlData
+    }
     open func write(kml: KMLRoot, to outputFile: URL) throws {
         
-        let doc = XMLDocument()
-        let root = kml.toElement(in: doc)
-        doc.setRootElement(root)
-        
-        let data = doc.xmlData(options: .nodePrettyPrint)
+        let data = try data(forKML: kml)        
         try data.write(to: outputFile)
         
     }

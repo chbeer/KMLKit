@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import XMLDocument
 
 /**
  This is an abstract element and cannot be used directly in a KML file. The following diagram shows how some of a Feature's elements appear in Google Earth.
@@ -191,10 +192,7 @@ open class KMLFeature: KMLObject {
             .first(where: { $0.id == styleUrl.fragment })
     }
     
-}
-
-#if os(macOS)
-extension KMLFeature {
+    // MARK: - KMLWriterNode
     
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
         super.addChildNodes(to: element, in: doc)
@@ -225,4 +223,3 @@ extension KMLFeature {
     }
 
 }
-#endif
