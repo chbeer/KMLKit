@@ -16,11 +16,18 @@ import XMLDocument
  The Schema element is always a child of Document. The ExtendedData element is a child of the Feature that contains the custom data.
  */
 open class KMLSchemaData: KMLObject, KMLSimpleData {
+    
+    open var schemaUrl: URL?
+    
     /** This element assigns a value to the custom data field identified by the name attribute. The type and name of this custom data field are declared in the &lt;Schema&gt; element. */
     open var data: [String : Any] = [:]
 
-
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
+        
+        if let schemaUrl = schemaUrl {
+            addAttribute(to: element, withName: "schemaUrl", value: schemaUrl.absoluteString)
+        }
+        
         super.addChildNodes(to: element, in: doc)
 
         for (key, value) in data {

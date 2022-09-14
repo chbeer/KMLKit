@@ -61,10 +61,10 @@ extension KMLRoot: KMLWriterNode {
         
 //        let nsXSI = XMLNode.namespace(withName: "xsi", stringValue: "http://www.w3.org/2001/XMLSchema-instance") as! XMLNode
 //        element.addNamespace(nsXSI)
-//
-//        var ns = XMLNode.namespace(withName: "", stringValue: "http://www.opengis.net/kml/2.2") as! XMLNode
-//        element.addNamespace(ns)
-//        
+
+        let ns = XMLNode.namespace(withName: nil, stringValue: "http://www.opengis.net/kml/2.2") as! XMLNode
+        element.addNamespace(ns)
+        
 //        ns = XMLNode.namespace(withName: "gx", stringValue: "http://www.google.com/kml/ext/2.2") as! XMLNode
 //        element.addNamespace(ns)
 //        

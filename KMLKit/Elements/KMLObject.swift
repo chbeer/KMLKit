@@ -20,7 +20,7 @@ open class KMLObject: NSObject, KMLWriterNode {
         super.init()
     }
     
-    public init(id: String) {
+    public init(id: String?) {
         self.id = id
         super.init()
     }

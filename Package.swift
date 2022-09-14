@@ -15,7 +15,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.0"),
-        .package(url: "https://github.com/chbeer/XMLDocument.git", .upToNextMajor(from: "1.1.0"))
+        .package(url: "https://github.com/chbeer/XMLDocument.git", .upToNextMajor(from: "1.2.0"))
         ],
     targets: [
         .target(

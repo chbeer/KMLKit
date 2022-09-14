@@ -26,8 +26,8 @@ open class KMLDocument: KMLContainer {
     // MARK: - XMLWriterNode
     
     override func addChildNodes(to element: XMLElement, in doc: XMLDocument) {
-        super.addChildNodes(to: element, in: doc)
         addChild(to: element, child: schema, in: doc)
+        super.addChildNodes(to: element, in: doc)
     }
 
 }

@@ -27,7 +27,7 @@ open class KMLContainer: KMLFeature, KMLFeatureCollection {
         super.init()
     }
     
-    public override init(id: String) {
+    public override init(id: String?) {
         super.init(id: id)
     }
     
