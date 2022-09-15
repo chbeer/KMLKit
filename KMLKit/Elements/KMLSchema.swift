@@ -38,13 +38,16 @@ extension KMLSchema: KMLWriterNode {
     
     func toElement(in doc: XMLDocument) -> XMLElement {
         let element = XMLElement(name: type(of: self).elementName)
-        if let id = self.id {
-            let idAttr = XMLNode.attribute(withName: "id", stringValue: id) as! XMLNode
-            element.addAttribute(idAttr)
-        }
+
+        // For a client app it was important that name is added before id:
         
         if let name = self.name {
             let idAttr = XMLNode.attribute(withName: "name", stringValue: name) as! XMLNode
+            element.addAttribute(idAttr)
+        }
+
+        if let id = self.id {
+            let idAttr = XMLNode.attribute(withName: "id", stringValue: id) as! XMLNode
             element.addAttribute(idAttr)
         }
         
